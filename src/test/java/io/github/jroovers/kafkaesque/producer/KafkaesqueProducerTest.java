@@ -1,13 +1,11 @@
-package io.github.jroovers.kafkaesque;
+package io.github.jroovers.kafkaesque.producer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class KafkaesqueApplicationTests {
-
+class KafkaesqueProducerTest {
     @Test
     void contextLoads() {
     }
-
 }
