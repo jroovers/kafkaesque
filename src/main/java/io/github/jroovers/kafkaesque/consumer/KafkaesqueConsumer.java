@@ -5,8 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.kafka.annotation.KafkaListener;
 
-import java.time.LocalDateTime;
-
 @SpringBootApplication
 @Slf4j
 public class KafkaesqueConsumer {
@@ -17,7 +15,7 @@ public class KafkaesqueConsumer {
         SpringApplication.run(KafkaesqueConsumer.class, args);
     }
 
-    @KafkaListener(topics = "demo", groupId = "kafkaesqueGrp1")
+    @KafkaListener(topics = "demo", groupId = "kafkaesqueGrp1", concurrency = "${consumer.threads}")
     public void listenGroupFoo1(String message) {
         count++;
         if (count % 100000 == 0) {

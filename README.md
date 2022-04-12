@@ -24,7 +24,8 @@ docker-compose down
 
 The producer sets up a topic with 4 partitions (allowing up to 4 consumers).
 
-It then sens plain text messages to the kafka topic 'demo'. the number of thread and iterations are configurable for this (application.properties)
+It then sens plain text messages to the kafka topic 'demo'. the number of thread and iterations are configurable for
+this (application.properties)
 
 For every 100k messages sent a timestamp is logged to the output.
 
@@ -36,6 +37,6 @@ For every 100k messages a string is logged to the output.
 
 ## Some observations about performance
 
-Using simple strings, throughput reached about 300k messages/second on a 2020 i7 laptop processor using 4 cores.
+Using simple strings, throughput reached about 400k messages/second on a 2020 i7 laptop processor using 4 cores.
 
-Reading 4 partitions with a single listener gave me about 200k messages/second.
+Reading 4 partitions with a single listener on 4 threads gave me about 380k messages/second.
