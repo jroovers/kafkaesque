@@ -1,0 +1,60 @@
+{
+  "type": "record",
+  "name": "DayReading",
+  "namespace": "io.github.jroovers.kafkaesque.generated.model",
+  "fields": [
+    {
+      "name": "meter",
+      "type": {
+        "type": "record",
+        "name": "Meter",
+        "fields": [
+          {
+            "name": "identification",
+            "type": "string"
+          },
+          {
+            "name": "meterType",
+            "type": {
+              "type": "enum",
+              "name": "MeterType",
+              "symbols": [
+                "CVN",
+                "SLM"
+              ]
+            },
+            "default": "SLM"
+          },
+          {
+            "name": "counters",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    {
+      "name": "readings",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "SnapshotReading",
+          "fields": [
+            {
+              "name": "time",
+              "type": "long"
+            },
+            {
+              "name": "consumed",
+              "type": "long"
+            },
+            {
+              "name": "produced",
+              "type": "long"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
