@@ -1,5 +1,7 @@
 package io.github.jroovers.kafkaesque.consumer.config;
 
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import io.github.jroovers.kafkaesque.common.util.AvroConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,34 +24,59 @@ public class KafkaConsumerConfig {
     @Value(value = "${kafka.address}")
     private String bootstrapAddress;
 
+    @Value(value = "${kafka.registry.address}")
+    private String registryAddress;
+
     @Value(value = "${kafka.group}")
     private String groupId;
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
-        Map<String, Object> props = new HashMap<>();
-        props.put(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+    public ConsumerFactory<String, Object> avroConsumerFactory() {
+        Map<String, Object> consumerProps = new HashMap<>();
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 bootstrapAddress);
-        props.put(
-                ConsumerConfig.GROUP_ID_CONFIG,
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG,
                 groupId);
-        props.put(
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+        consumerProps.put(AvroConfig.REGISTRY_SERVERS_CONFIG,
+                registryAddress);
+        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
-        props.put(
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(props);
+        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                KafkaAvroDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(consumerProps);
     }
 
     @Bean
+    public ConsumerFactory<String, String> textConsumerFactory() {
+        Map<String, Object> consumerProps = new HashMap<>();
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                bootstrapAddress);
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG,
+                groupId);
+        consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+                StringDeserializer.class);
+        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+                StringDeserializer.class);
+        return new DefaultKafkaConsumerFactory<>(consumerProps);
+    }
+
+    @Bean(name = "avro")
+    public ConcurrentKafkaListenerContainerFactory<String, Object>
+    avroKafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(avroConsumerFactory());
+        return factory;
+    }
+
+    @Bean(name = "text")
     public ConcurrentKafkaListenerContainerFactory<String, String>
-    kafkaListenerContainerFactory() {
+    textKafkaListenerContainerFactory() {
 
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(textConsumerFactory());
         return factory;
     }
 }

@@ -44,7 +44,7 @@ public class KafkaesqueProducer implements CommandLineRunner {
 
         var pool = Executors.newFixedThreadPool(threads);
         final long messagesPerThread = messageCount / threads;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < threads; i++) {
             int finalI = i + 1;
             pool.submit(() -> {
                 for (int j = 0; j < messagesPerThread; j++) {

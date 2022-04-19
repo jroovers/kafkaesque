@@ -15,8 +15,16 @@ public class KafkaesqueConsumer {
         SpringApplication.run(KafkaesqueConsumer.class, args);
     }
 
-    @KafkaListener(topics = "demo", groupId = "kafkaesqueGrp1", concurrency = "${consumer.threads}")
+    @KafkaListener(containerFactory = "text",topics = "demo", groupId = "kafkaesqueGrp1", concurrency = "${consumer.threads}")
     public void listenGroupFoo1(String message) {
+        count++;
+        if (count % 100000 == 0) {
+            log.info("{}th Message in group kafkaesqueGrp1: {}", count, message);
+        }
+    }
+
+    @KafkaListener(containerFactory = "avro",topics = "demo", groupId = "kafkaesqueGrp1", concurrency = "${consumer.threads}")
+    public void listenAvro(Object message) {
         count++;
         if (count % 100000 == 0) {
             log.info("{}th Message in group kafkaesqueGrp1: {}", count, message);

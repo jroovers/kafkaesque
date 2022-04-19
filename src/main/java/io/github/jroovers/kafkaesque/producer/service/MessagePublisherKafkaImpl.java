@@ -1,6 +1,7 @@
 package io.github.jroovers.kafkaesque.producer.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -8,14 +9,24 @@ import org.springframework.stereotype.Service;
 public class MessagePublisherKafkaImpl implements MqPublisher {
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    @Qualifier("avro")
+    private KafkaTemplate<String, Object> avroKafkaTemplate;
+
+    @Autowired
+    @Qualifier("text")
+    private KafkaTemplate<String, String> textKafkaTemplate;
 
     public void sendMessage(String topic, String message) {
-        kafkaTemplate.send(topic, message);
+        textKafkaTemplate.send(topic, message);
     }
 
     public void sendMessage(String message) {
-        kafkaTemplate.send("demo", message);
+        textKafkaTemplate.send("demo", message);
+    }
+
+    @Override
+    public void sendMessage(String topic, Object message) {
+        avroKafkaTemplate.send("demo", message);
     }
 
 }

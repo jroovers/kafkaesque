@@ -10,10 +10,18 @@ public interface MqPublisher {
     void sendMessage(String message);
 
     /**
-     * Send a message on specified topic
+     * Send a text message on specified topic
      *
      * @param topic   topic
      * @param message message
      */
     void sendMessage(String topic, String message);
+
+    /**
+     * Send a avro message on specified topic
+     *
+     * @param topic   topic
+     * @param message message
+     */
+    void sendMessage(String topic, Object message);
 }
